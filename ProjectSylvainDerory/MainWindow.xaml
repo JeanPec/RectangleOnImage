@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjectSylvainDerory"
         mc:Ignorable="d"
-        Title="Rectangles On Image" Height="450" Width="800">
+        Title="Rectangles On Image" Height="450" Width="600">
     <Grid>
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -20,13 +20,13 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" >
             <Button Name="Upload_Img" Content="Click to Upload Image" Click="Upload_Img_Click" Width="200" Margin="0 0 30 0" Height="30"/>
-            <Button Name="Download_Img" Content="Click to Download Image" Click="Download_Img_Click" Width="200" Margin="0 0 30 0" Height="30"/>
+            <Button Name="Download_Img" IsEnabled="False" Content="Click to Download Image" Click="Download_Img_Click" Width="200" Margin="0 0 30 0" Height="30"/>
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" >
             <RadioButton x:Name="addRadio" Checked="state_Checked" IsChecked="True" Margin="0 0 10 10">Add Rectangle</RadioButton>
-            <RadioButton x:Name="deleteRadio" Checked="state_Checked" Margin="0 0 10 10">Delete Rectangle</RadioButton>
-            <RadioButton x:Name="moveRAdio" Checked="state_Checked" Margin="0 0 10 10">Move Rectangle</RadioButton>
-            <RadioButton x:Name="state" Checked="state_Checked" Margin="0 0 10 10">Change Rectangle Color</RadioButton>
+            <RadioButton x:Name="deleteRadio" IsEnabled="False" Checked="state_Checked" Margin="0 0 10 10">Delete Rectangle</RadioButton>
+            <RadioButton x:Name="moveRadio" IsEnabled="False" Checked="state_Checked" Margin="0 0 10 10">Move Rectangle</RadioButton>
+            <RadioButton x:Name="changeColorRadio" IsEnabled="False" Checked="state_Checked" Margin="0 0 10 10">Change Rectangle Color</RadioButton>
         </StackPanel>
         <Border Grid.Row="2" BorderThickness="3" Width="405" BorderBrush="Black">
             <Canvas  

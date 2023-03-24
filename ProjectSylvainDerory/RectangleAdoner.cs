@@ -20,7 +20,10 @@ namespace ProjectSylvainDerory
 
         public RectangleAdoner(UIElement adornedElement, Point startingPoint, Point imgPoint, double imgWidth, double imgHeight) : base(adornedElement)
         {
-            //Initialize and add elements and their methods to manage the resize
+            //Initialize and add elements to a VisualCollection
+            //To simulate the display of the elements when hovering on it
+            //The element are transparent to the user and we draw the visible part to the user 
+            //When he hovers on a Thumb
             RectangleAdornerVisuals = new VisualCollection(this);
             SolidColorBrush transparent = Brushes.Transparent;
             thumbUL = new Thumb() { Background = transparent, Height = 15, Width = 15 };
@@ -50,6 +53,8 @@ namespace ProjectSylvainDerory
             RectangleAdornerVisuals.Add(thumbDL);
             RectangleAdornerVisuals.Add(thumbML);
 
+            //We use these properties to know if the mouse is still on the image
+            //To avoid resizing the rectangle outside the image
             myPoint = startingPoint;
             minX = imgPoint.X;
             maxX = imgPoint.X + imgWidth;
@@ -79,7 +84,8 @@ namespace ProjectSylvainDerory
 
         private void Move_Horizontal_Left(object sender, DragDeltaEventArgs e)
         {
-            //manage the mouvement to the left and change the icon
+            //manage the mouvement when moving horizontaly on the left side
+            //change the icon to better inform the user of the resizing
             //cannot go further than the image and if it reaches the
             //other side it is 0 we do not manage negative values
             //store the cursor before the resize to go back to it afterwards
@@ -103,6 +109,7 @@ namespace ProjectSylvainDerory
 
         private void Move_Diagonal_Down_Left(object sender, DragDeltaEventArgs e)
         {
+            //manage the mouvement when moving diagonaly in the lower left corner
             if (Mouse.OverrideCursor != Cursors.SizeNESW) activeCursor = Mouse.OverrideCursor;
             Mouse.OverrideCursor = Cursors.SizeNESW;
             var ele = (FrameworkElement)AdornedElement;
@@ -131,6 +138,7 @@ namespace ProjectSylvainDerory
 
         private void Move_Vertical_Down(object sender, DragDeltaEventArgs e)
         {
+            //manage the mouvement when moving verticaly on the lower side
             if (Mouse.OverrideCursor != Cursors.SizeNS) activeCursor = Mouse.OverrideCursor;
             Mouse.OverrideCursor = Cursors.SizeNS;
             var ele = (FrameworkElement)AdornedElement;
@@ -147,6 +155,7 @@ namespace ProjectSylvainDerory
 
         private void Move_Diagonal_Down_Right(object sender, DragDeltaEventArgs e)
         {
+            //manage the mouvement when moving diagonaly in the lower right corner
             if (Mouse.OverrideCursor != Cursors.SizeNWSE) activeCursor = Mouse.OverrideCursor;
             Mouse.OverrideCursor = Cursors.SizeNWSE;
             var ele = (FrameworkElement)AdornedElement;
@@ -173,6 +182,7 @@ namespace ProjectSylvainDerory
 
         private void Move_Horizontal_Right(object sender, DragDeltaEventArgs e)
         {
+            //manage the mouvement when moving horizontaly on the right side
             if (Mouse.OverrideCursor != Cursors.SizeWE) activeCursor = Mouse.OverrideCursor;
             Mouse.OverrideCursor = Cursors.SizeWE;
             var ele = (FrameworkElement)AdornedElement;
@@ -189,6 +199,7 @@ namespace ProjectSylvainDerory
 
         private void Move_Diagonal_Up_Right(object sender, DragDeltaEventArgs e)
         {
+            //manage the mouvement when moving diagonaly in the upper right corner
             if (Mouse.OverrideCursor != Cursors.SizeNESW) activeCursor = Mouse.OverrideCursor;
             Mouse.OverrideCursor = Cursors.SizeNESW;
             var ele = (FrameworkElement)AdornedElement;
@@ -218,6 +229,7 @@ namespace ProjectSylvainDerory
 
         private void Move_Vertical_Up(object sender, DragDeltaEventArgs e)
         {
+            //manage the mouvement when moving diagonaly on the upper side
             if (Mouse.OverrideCursor != Cursors.SizeNS) activeCursor = Mouse.OverrideCursor;
             Mouse.OverrideCursor = Cursors.SizeNS;
             var ele = (FrameworkElement)AdornedElement;
@@ -238,6 +250,7 @@ namespace ProjectSylvainDerory
 
         private void Move_Diagonal_Up_Left(object sender, DragDeltaEventArgs e)
         {
+            //manage the mouvement when moving diagonaly in the upper left corner
             if (Mouse.OverrideCursor != Cursors.SizeNWSE) activeCursor = Mouse.OverrideCursor;
             Mouse.OverrideCursor = Cursors.SizeNWSE;
             var ele = (FrameworkElement)AdornedElement;
@@ -266,12 +279,17 @@ namespace ProjectSylvainDerory
             }
         }
 
+        // when the user hover on one of the points
+        // we draw in the OnRender the visible Adorner
         protected override void OnMouseMove(MouseEventArgs e)
         {
             isVisible = true;
             InvalidateVisual();
         }
 
+        // when the user leave one of the points
+        // we change the state isVisible wich delete 
+        // the visible part of the Adorner
         protected override void OnMouseLeave(MouseEventArgs e)
         {
             Mouse.OverrideCursor = activeCursor;
@@ -279,6 +297,7 @@ namespace ProjectSylvainDerory
             InvalidateVisual();
         }
 
+        // If isVisible is true we draw the visble part of the Adorner
         protected override void OnRender(DrawingContext drawingContext)
         {
             if(isVisible)
@@ -305,6 +324,8 @@ namespace ProjectSylvainDerory
 
         protected override int VisualChildrenCount => (RectangleAdornerVisuals != null) ? RectangleAdornerVisuals.Count : 0;
 
+        // Arrange the Thumbs on the Rectangle, they are transparent
+        // The visible part is drawn in the function onRender
         protected override Size ArrangeOverride(Size finalSize)
         {
             thumbUL.Arrange(new Rect(-5, -5, 15, 15));

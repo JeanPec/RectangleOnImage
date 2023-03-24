@@ -66,6 +66,10 @@ namespace ProjectSylvainDerory
             {
                 if(state_Cursor == "Change Rectangle Color")
                 {
+                    // if the user wants to modify the color
+                    // when clicking on a Rectangle we display
+                    // a Color Palette for him to choose a new one
+                    // the color selected by default is the color of the Rectangle
                     Rectangle myRectangle = (e.OriginalSource as Rectangle);
                     Color rectColor = (myRectangle.Fill as SolidColorBrush).Color;
                     System.Drawing.Color dialogColor = Convert_Color_to_Brush(rectColor);
@@ -88,6 +92,11 @@ namespace ProjectSylvainDerory
                 }
                 else if (state_Cursor == "Move Rectangle")
                 {
+                    // If the user selected the move Cursor
+                    // He can drag and drop the Rectangle on the image
+                    // the offset is necessary to know the difference between
+                    // where the user clicked on the Rectangle and the position
+                    // of the Rectangle.
                     movingRectangle = (e.OriginalSource as Rectangle);
                     // Get Offset to move the element
                     offset = e.GetPosition(canvasImage);
@@ -96,10 +105,16 @@ namespace ProjectSylvainDerory
                 }
                 else if (state_Cursor == "Delete Rectangle")
                 {
+                    // If the user selected the delete Cursor
+                    // when Clicking on a Rectangle, it will be deleted
                     canvasImage.Children.Remove(e.OriginalSource as Rectangle);
                 }
             }
-            else if (state_Cursor == "Add Rectangle") {
+            else if (state_Cursor == "Add Rectangle")
+            {
+                // If the user selected the Add Cursor
+                // when Clickingon the image a rectangle is created
+                // the user can then drag the mouse to draw the rectangle
                 startingPoint = e.GetPosition(canvasImage);
                 if (Check_mouse_in_image(startingPoint))
                 {
@@ -171,6 +186,7 @@ namespace ProjectSylvainDerory
 
         private void state_Checked(object sender, RoutedEventArgs e)
         {
+            // Change the cursor in terms of what action the user wants to do
             System.Windows.Controls.RadioButton radio = sender as System.Windows.Controls.RadioButton;
             state_Cursor = radio.Content != null ? radio.Content.ToString() : "Add Rectangle";
             switch (state_Cursor)
@@ -208,6 +224,11 @@ namespace ProjectSylvainDerory
                     imagePictures.Width = canvasImage.Width;
                     imagePictures.Height = canvasImage.Height;
                 }
+                //Once an Image has been uploaded we can enabled the download button and radio buttons
+                Download_Img.IsEnabled = true;
+                moveRadio.IsEnabled = true;
+                changeColorRadio.IsEnabled = true;
+                deleteRadio.IsEnabled = true;
             }
             catch
             {
@@ -218,6 +239,7 @@ namespace ProjectSylvainDerory
 
         private void Download_Img_Click(object sender, RoutedEventArgs e)
         {
+            string fileName;
             //Render Canvas as a Bitmap
             RenderTargetBitmap renderBitmap = new RenderTargetBitmap(
                 (int)canvasImage.ActualWidth,
@@ -226,16 +248,24 @@ namespace ProjectSylvainDerory
                 96d,
                 PixelFormats.Pbgra32);
             renderBitmap.Render(canvasImage);
+            //Create PNG encoder to save Bitmap to a file
+            PngBitmapEncoder pngEncoder = new PngBitmapEncoder();
+            pngEncoder.Frames.Add(BitmapFrame.Create(renderBitmap));
             try
             {
                 //Use Open File Dialog to indicate the name and location of the file we cant to create
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    //Create PNG encoder to save Bitmap to a file
-                    PngBitmapEncoder pngEncoder = new PngBitmapEncoder();
-                    pngEncoder.Frames.Add(BitmapFrame.Create(renderBitmap));
-                    using (FileStream fileStream = new FileStream(saveFileDialog.FileName, FileMode.Create))
+                    //check if file name has an extension otherwise add .png
+                    if(System.IO.Path.HasExtension(saveFileDialog.FileName))
+                    {
+                        fileName = saveFileDialog.FileName;
+                    } else
+                    {
+                        fileName = string.Concat(saveFileDialog.FileName,".png");
+                    }
+                    using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
                     {
                         pngEncoder.Save(fileStream);
                     }
